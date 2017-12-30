@@ -1,7 +1,10 @@
 [package]
 name = "librustzcash"
 version = "0.1.0"
-authors = ["Sean Bowe <ewillbefull@gmail.com>"]
+authors = [
+    "Sean Bowe <ewillbefull@gmail.com>",
+    "Jack Grigg <str4d@i2pmail.org>",
+    ]
 
 [lib]
 name = "rustzcash"
@@ -9,4 +12,7 @@ path = "src/rustzcash.rs"
 crate-type = ["staticlib"]
 
 [dependencies]
+blake2b = "0.7"
+byteorder = "1"
 libc = "0.2"
+log = "0.4"
