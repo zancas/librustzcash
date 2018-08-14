@@ -6,38 +6,10 @@ use pairing::{
 };
 use sapling_crypto::{
     circuit::multipack,
-    jubjub::{edwards, fs::FsRepr, FixedGenerators, JubjubBls12, JubjubParams, Unknown},
+    jubjub::{edwards, FixedGenerators, JubjubBls12, Unknown},
     redjubjub::{PublicKey, Signature},
 };
-
-// This function computes `value` in the exponent of the value commitment base
-fn compute_value_balance(
-    value: i64,
-    params: &JubjubBls12,
-) -> Option<edwards::Point<Bls12, Unknown>> {
-    // Compute the absolute value (failing if -i64::MAX is
-    // the value)
-    let abs = match value.checked_abs() {
-        Some(a) => a as u64,
-        None => return None,
-    };
-
-    // Is it negative? We'll have to negate later if so.
-    let is_negative = value.is_negative();
-
-    // Compute it in the exponent
-    let mut value_balance = params
-        .generator(FixedGenerators::ValueCommitmentValue)
-        .mul(FsRepr::from(abs), params);
-
-    // Negate if necessary
-    if is_negative {
-        value_balance = value_balance.negate();
-    }
-
-    // Convert to unknown order point
-    Some(value_balance.into())
-}
+use zcash_proofs::sapling::compute_value_balance;
 
 /// A context object for verifying the Sapling components of a Zcash transaction.
 pub struct SaplingVerificationContext {
