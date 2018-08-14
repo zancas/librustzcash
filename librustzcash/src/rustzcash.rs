@@ -1015,28 +1015,8 @@ pub extern "system" fn librustzcash_sapling_spend_sig(
         Err(_) => return false,
     };
 
-    // We compute `rsk`...
-    let rsk = ask.randomize(ar);
-
-    // We compute `rk` from there (needed for key prefixing)
-    let rk =
-        redjubjub::PublicKey::from_private(&rsk, FixedGenerators::SpendingKeyGenerator, &JUBJUB);
-
-    // Compute the signature's message for rk/spend_auth_sig
-    let mut data_to_be_signed = [0u8; 64];
-    rk.0
-        .write(&mut data_to_be_signed[0..32])
-        .expect("message buffer should be 32 bytes");
-    (&mut data_to_be_signed[32..64]).copy_from_slice(&(unsafe { &*sighash })[..]);
-
     // Do the signing
-    let mut rng = OsRng::new().expect("should be able to construct RNG");
-    let sig = rsk.sign(
-        &data_to_be_signed,
-        &mut rng,
-        FixedGenerators::SpendingKeyGenerator,
-        &JUBJUB,
-    );
+    let sig = sapling::spend_sig(ask, ar, unsafe { &*sighash }, &JUBJUB);
 
     // Write out the signature
     sig.write(&mut (unsafe { &mut *result })[..])
