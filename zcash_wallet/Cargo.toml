@@ -6,3 +6,9 @@ authors = [
 ]
 
 [dependencies]
+failure = "0.1"
+pairing = { path = "../pairing" }
+sapling-crypto = { path = "../sapling-crypto" }
+zcash_primitives = { path = "../zcash_primitives" }
+zcash_proofs = { path = "../zcash_proofs" }
+zip32 = { path = "../zip32" }

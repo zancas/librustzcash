@@ -1,7 +1,8 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+#[macro_use]
+extern crate failure;
+
+extern crate pairing;
+extern crate sapling_crypto;
+extern crate zcash_primitives;
+extern crate zcash_proofs;
+extern crate zip32;
