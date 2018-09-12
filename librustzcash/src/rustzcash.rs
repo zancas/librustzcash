@@ -5,6 +5,7 @@ extern crate libc;
 extern crate pairing;
 extern crate rand;
 extern crate sapling_crypto;
+extern crate zcash_primitives;
 extern crate zcash_proofs;
 
 mod hashreader;
@@ -50,7 +51,7 @@ use std::fs::File;
 use std::slice;
 
 use sapling_crypto::primitives::{ProofGenerationKey, ViewingKey};
-
+use zcash_primitives::sapling::spend_sig;
 use zcash_proofs::sapling::{CommitmentTreeWitness, SaplingProvingContext};
 
 pub mod equihash;
@@ -1016,7 +1017,7 @@ pub extern "system" fn librustzcash_sapling_spend_sig(
     };
 
     // Do the signing
-    let sig = sapling::spend_sig(ask, ar, unsafe { &*sighash }, &JUBJUB);
+    let sig = spend_sig(ask, ar, unsafe { &*sighash }, &JUBJUB);
 
     // Write out the signature
     sig.write(&mut (unsafe { &mut *result })[..])
