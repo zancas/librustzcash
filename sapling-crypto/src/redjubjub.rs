@@ -40,6 +40,13 @@ pub struct PrivateKey<E: JubjubEngine>(pub E::Fs);
 pub struct PublicKey<E: JubjubEngine>(pub Point<E, Unknown>);
 
 impl Signature {
+    pub fn blank() -> Self {
+        Signature {
+            rbar: [0u8; 32],
+            sbar: [0u8; 32],
+        }
+    }
+
     pub fn read<R: Read>(mut reader: R) -> io::Result<Self> {
         let mut rbar = [0u8; 32];
         let mut sbar = [0u8; 32];
