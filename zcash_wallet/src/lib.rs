@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate failure;
 
+extern crate bech32;
 extern crate hex;
 extern crate pairing;
 extern crate rand;
@@ -10,6 +11,7 @@ extern crate zcash_proofs;
 extern crate zip32;
 
 mod account;
+pub mod address;
 pub mod chain;
 pub mod constants;
 mod keystore;

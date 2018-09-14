@@ -6,6 +6,7 @@ authors = [
 ]
 
 [dependencies]
+bech32 = "0.5"
 failure = "0.1"
 hex = "0.3"
 pairing = { path = "../pairing" }
