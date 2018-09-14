@@ -2,6 +2,7 @@
 members = [
     "bellman",
     "librustzcash",
+    "libzcashwallet",
     "pairing",
     "sapling-crypto",
     "zcash_primitives",
