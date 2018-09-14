@@ -10,7 +10,6 @@ extern crate zcash_proofs;
 
 mod hashreader;
 
-#[macro_use]
 extern crate lazy_static;
 
 use pairing::{
@@ -24,7 +23,7 @@ use sapling_crypto::{
     jubjub::{
         edwards,
         fs::{Fs, FsRepr},
-        FixedGenerators, JubjubBls12, JubjubEngine, JubjubParams, PrimeOrder, ToUniform, Unknown,
+        FixedGenerators, JubjubEngine, JubjubParams, PrimeOrder, ToUniform, Unknown,
     },
     pedersen_hash::{pedersen_hash, Personalization},
     redjubjub::{self, Signature},
@@ -51,7 +50,7 @@ use std::fs::File;
 use std::slice;
 
 use sapling_crypto::primitives::{ProofGenerationKey, ViewingKey};
-use zcash_primitives::sapling::spend_sig;
+use zcash_primitives::{sapling::spend_sig, JUBJUB};
 use zcash_proofs::sapling::{CommitmentTreeWitness, SaplingProvingContext};
 
 pub mod equihash;
@@ -61,10 +60,6 @@ use sapling::SaplingVerificationContext;
 
 #[cfg(test)]
 mod tests;
-
-lazy_static! {
-    static ref JUBJUB: JubjubBls12 = { JubjubBls12::new() };
-}
 
 static mut SAPLING_SPEND_VK: Option<PreparedVerifyingKey<Bls12>> = None;
 static mut SAPLING_OUTPUT_VK: Option<PreparedVerifyingKey<Bls12>> = None;

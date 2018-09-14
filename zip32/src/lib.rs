@@ -2,10 +2,9 @@ extern crate aes;
 extern crate blake2_rfc;
 extern crate byteorder;
 extern crate fpe;
-#[macro_use]
-extern crate lazy_static;
 extern crate pairing;
 extern crate sapling_crypto;
+extern crate zcash_primitives;
 
 use aes::Aes256;
 use blake2_rfc::blake2b::{Blake2b, Blake2bResult};
@@ -13,16 +12,11 @@ use byteorder::{ByteOrder, LittleEndian, ReadBytesExt, WriteBytesExt};
 use fpe::ff1::{BinaryNumeralString, FF1};
 use pairing::{bls12_381::Bls12, Field, PrimeField, PrimeFieldRepr};
 use sapling_crypto::{
-    jubjub::{
-        edwards, FixedGenerators, JubjubBls12, JubjubEngine, JubjubParams, ToUniform, Unknown,
-    },
+    jubjub::{edwards, FixedGenerators, JubjubEngine, JubjubParams, ToUniform, Unknown},
     primitives::{Diversifier, PaymentAddress, ViewingKey},
 };
 use std::io::{self, Read, Write};
-
-lazy_static! {
-    static ref JUBJUB: JubjubBls12 = { JubjubBls12::new() };
-}
+use zcash_primitives::JUBJUB;
 
 pub const PRF_EXPAND_PERSONALIZATION: &'static [u8; 16] = b"Zcash_ExpandSeed";
 pub const ZIP32_SAPLING_MASTER_PERSONALIZATION: &'static [u8; 16] = b"ZcashIP32Sapling";
