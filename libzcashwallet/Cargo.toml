@@ -1,0 +1,14 @@
+[package]
+name = "libzcashwallet"
+version = "0.0.0"
+authors = [
+    "Jack Grigg <jack@z.cash>",
+]
+
+[lib]
+name = "zcashwallet"
+crate_type = ["cdylib"]
+
+[dependencies]
+jni = "0.10"
+zcash_wallet = { path = "../zcash_wallet" }
