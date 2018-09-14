@@ -10,7 +10,7 @@ extern crate zcash_primitives;
 extern crate zcash_proofs;
 extern crate zip32;
 
-mod account;
+pub mod account;
 pub mod address;
 pub mod chain;
 pub mod constants;
