@@ -8,6 +8,7 @@ extern crate zcash_proofs;
 extern crate zip32;
 
 mod account;
+mod keystore;
 pub mod types;
 mod wallet;
 
