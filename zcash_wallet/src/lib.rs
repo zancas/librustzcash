@@ -12,6 +12,7 @@ extern crate zip32;
 
 pub mod account;
 pub mod address;
+mod builder;
 pub mod chain;
 pub mod constants;
 mod keystore;
@@ -20,4 +21,5 @@ mod sender;
 pub mod types;
 mod wallet;
 
+pub use builder::Builder;
 pub use wallet::Wallet;
