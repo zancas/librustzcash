@@ -782,6 +782,7 @@ version = "0.0.0"
 dependencies = [
  "failure 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "pairing 0.14.2",
+ "rand 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "sapling-crypto 0.0.1",
  "zcash_primitives 0.0.0",
  "zcash_proofs 0.0.0",
