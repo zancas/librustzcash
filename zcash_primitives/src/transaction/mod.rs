@@ -1,5 +1,7 @@
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
+use hex;
 use sapling_crypto::redjubjub::Signature;
+use std::fmt;
 use std::io::{self, Read, Write};
 use std::ops::Deref;
 
@@ -19,6 +21,17 @@ const OVERWINTER_VERSION_GROUP_ID: u32 = 0x03C48270;
 const OVERWINTER_TX_VERSION: u32 = 3;
 const SAPLING_VERSION_GROUP_ID: u32 = 0x892F2085;
 const SAPLING_TX_VERSION: u32 = 4;
+
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+pub struct TxId(pub [u8; 32]);
+
+impl fmt::Display for TxId {
+    fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+        let mut data = self.0.to_vec();
+        data.reverse();
+        formatter.write_str(&hex::encode(data))
+    }
+}
 
 /// A Zcash transaction.
 pub struct Transaction(TransactionData);
