@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate failure;
 
+extern crate hex;
 extern crate pairing;
 extern crate rand;
 extern crate sapling_crypto;
@@ -9,6 +10,8 @@ extern crate zcash_proofs;
 extern crate zip32;
 
 mod account;
+pub mod chain;
+pub mod constants;
 mod keystore;
 mod prover;
 mod sender;
