@@ -2,6 +2,7 @@
 extern crate failure;
 
 extern crate bech32;
+extern crate bellman;
 extern crate hex;
 extern crate pairing;
 extern crate rand;
