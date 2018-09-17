@@ -7,6 +7,7 @@ authors = [
 
 [dependencies]
 bech32 = "0.5"
+bellman = { path = "../bellman" }
 failure = "0.1"
 hex = "0.3"
 pairing = { path = "../pairing" }
