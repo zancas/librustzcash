@@ -211,8 +211,8 @@ fn init_zksnark_params(
         spend_hash,
         output_path,
         output_hash,
-        sprout_path,
-        sprout_hash,
+        Some(sprout_path),
+        Some(sprout_hash),
     );
 
     // Caller is responsible for calling this function once, so
@@ -224,7 +224,7 @@ fn init_zksnark_params(
 
         SAPLING_SPEND_VK = Some(spend_vk);
         SAPLING_OUTPUT_VK = Some(output_vk);
-        SPROUT_GROTH16_VK = Some(sprout_vk);
+        SPROUT_GROTH16_VK = Some(sprout_vk.unwrap());
     }
 }
 
