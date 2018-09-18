@@ -17,4 +17,9 @@ class Wallet(seed: ByteArray, zcsd: String) {
     fun accounts() = mJNI.accounts(mWalletPtr!!)
 
     fun defaultAddressForAccount(account: Int) = mJNI.defaultAddressForAccount(mWalletPtr!!, account)
+
+    fun balancesForAccount(account: Int): Pair<Int, Int> {
+        val balances = mJNI.balancesForAccount(mWalletPtr!!, account)
+        return Pair(balances[0], balances[1])
+    }
 }

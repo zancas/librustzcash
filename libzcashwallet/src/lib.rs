@@ -3,7 +3,7 @@ extern crate zcash_wallet;
 
 use jni::{
     objects::{JClass, JString},
-    sys::{jbyteArray, jint, jlong, jobjectArray, jsize, jstring},
+    sys::{jbyteArray, jint, jintArray, jlong, jobjectArray, jsize, jstring},
     JNIEnv,
 };
 use zcash_wallet::{address::encode_payment_address, constants, Builder, Wallet};
@@ -98,4 +98,21 @@ pub extern "system" fn Java_cash_z_wallet_JNIWallet_defaultAddressForAccount(
             &addr,
         )).expect("Couldn't create Java string!");
     output.into_inner()
+}
+
+#[no_mangle]
+pub extern "system" fn Java_cash_z_wallet_JNIWallet_balancesForAccount(
+    env: JNIEnv,
+    _class: JClass,
+    wallet_ptr: jlong,
+    account: jint,
+) -> jintArray {
+    let wallet = unsafe { &mut *(wallet_ptr as *mut Wallet) };
+
+    let (spendable, pending) = wallet.accounts()[account as usize].balances();
+
+    let jbalances = env.new_int_array(2).unwrap();
+    env.set_int_array_region(jbalances, 0, &[spendable.0 as jint, pending.0 as jint])
+        .unwrap();
+    jbalances
 }
