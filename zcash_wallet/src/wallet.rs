@@ -1,6 +1,12 @@
 //! Implementation of a Zcash light wallet.
 
+use std::cell::RefCell;
+use std::collections::HashMap;
+use std::rc::Rc;
+use zcash_primitives::transaction::TxId;
+
 use account::{Account, AccountId};
+use transaction::WalletTx;
 use types::{ChainState, KeyStore, TxProver, TxSender};
 
 pub struct Wallet {
@@ -10,6 +16,7 @@ pub struct Wallet {
     prover: Box<TxProver>,
     sender: Box<TxSender>,
     accounts: Vec<Account>,
+    transactions: HashMap<TxId, Rc<RefCell<WalletTx>>>,
 }
 
 impl Wallet {
@@ -27,6 +34,7 @@ impl Wallet {
             prover,
             sender,
             accounts: vec![],
+            transactions: HashMap::new(),
         }
     }
 
