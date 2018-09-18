@@ -19,6 +19,7 @@ pub mod constants;
 mod keystore;
 mod prover;
 mod sender;
+pub mod transaction;
 pub mod types;
 mod wallet;
 
