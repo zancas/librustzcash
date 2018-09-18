@@ -1,5 +1,21 @@
+use pairing::bls12_381::Bls12;
+use sapling_crypto::primitives::{Diversifier, Note};
+use std::cell::RefCell;
 use std::collections::HashMap;
+use std::rc::{Rc, Weak};
 use zcash_primitives::transaction::{Transaction, TxId};
+use zcash_proofs::sapling::CommitmentTreeWitness;
+
+pub struct Memo([u8; 512]);
+
+impl Default for Memo {
+    fn default() -> Self {
+        // Empty memo field indication per ZIP 302
+        let mut memo = [0u8; 512];
+        memo[0] = 0xF6;
+        Memo(memo)
+    }
+}
 
 /// The status of a transaction in the wallet.
 #[derive(Debug, PartialEq)]
@@ -28,6 +44,9 @@ pub struct WalletTx {
     created_time: u32,
     status: TxStatus,
 
+    /// Map from vShieldedOutput index to WalletNote
+    pub notes: HashMap<usize, Rc<WalletNote>>,
+
     /// Present if the wallet created the transaction, or has requested it from
     /// the server.
     tx: Option<Transaction>,
@@ -41,6 +60,7 @@ impl WalletTx {
             status: TxStatus::Pending {
                 expires: expiry_height,
             },
+            notes: HashMap::new(),
             tx: None,
         }
     }
@@ -53,6 +73,7 @@ impl WalletTx {
                 expires: expiry_height,
                 mined,
             },
+            notes: HashMap::new(),
             tx: None,
         }
     }
@@ -130,6 +151,47 @@ impl WalletTx {
             _ => None,
         } {
             self.status = status;
+        }
+    }
+}
+
+pub struct WalletNote {
+    /// The transaction in which this note was received
+    tx_received: Weak<RefCell<WalletTx>>,
+
+    /// The transaction in which this note was spent
+    pub tx_spent: Option<Weak<RefCell<WalletTx>>>,
+
+    pub diversifier: Diversifier,
+
+    pub note: Note<Bls12>,
+
+    memo: Option<Memo>,
+
+    pub(crate) witness: Option<CommitmentTreeWitness>,
+}
+
+impl WalletNote {
+    pub fn new(
+        tx_received: Weak<RefCell<WalletTx>>,
+        diversifier: Diversifier,
+        note: Note<Bls12>,
+        witness: CommitmentTreeWitness,
+    ) -> Self {
+        WalletNote {
+            tx_received,
+            tx_spent: None,
+            diversifier,
+            note,
+            memo: None,
+            witness: Some(witness),
+        }
+    }
+
+    pub fn is_spendable(&self) -> bool {
+        match self.tx_received.upgrade() {
+            Some(tx) => tx.borrow().is_verified(),
+            None => false,
         }
     }
 }
