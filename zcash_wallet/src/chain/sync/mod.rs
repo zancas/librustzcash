@@ -2,6 +2,12 @@ use failure::Error;
 
 use super::{ChainSync, CompactBlock};
 
+#[cfg(feature = "jsonrpc")]
+mod rpc;
+
+#[cfg(feature = "jsonrpc")]
+pub use self::rpc::RpcChainSync;
+
 pub(crate) struct MockChainSync;
 
 impl ChainSync for MockChainSync {

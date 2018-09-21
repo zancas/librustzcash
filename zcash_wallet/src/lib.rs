@@ -11,6 +11,23 @@ extern crate zcash_primitives;
 extern crate zcash_proofs;
 extern crate zip32;
 
+#[cfg(feature = "jsonrpc")]
+extern crate exonum_jsonrpc;
+
+#[cfg(feature = "jsonrpc")]
+extern crate hex_serde;
+
+#[cfg(feature = "jsonrpc")]
+extern crate serde;
+
+#[cfg(feature = "jsonrpc")]
+#[macro_use]
+extern crate serde_derive;
+
+#[cfg(feature = "jsonrpc")]
+#[macro_use]
+extern crate serde_json;
+
 pub mod account;
 pub mod address;
 mod builder;
