@@ -12,7 +12,7 @@ extern crate lazy_static;
 
 use pairing::{
     bls12_381::{Bls12, Fr, FrRepr},
-    BitIterator, PrimeField, PrimeFieldRepr,
+    PrimeField, PrimeFieldRepr,
 };
 
 use sapling_crypto::{
@@ -23,7 +23,6 @@ use sapling_crypto::{
         fs::{Fs, FsRepr},
         FixedGenerators, JubjubEngine, JubjubParams, PrimeOrder, ToUniform, Unknown,
     },
-    pedersen_hash::{pedersen_hash, Personalization},
     redjubjub::{self, Signature},
 };
 
@@ -47,7 +46,7 @@ use std::fs::File;
 use std::slice;
 
 use sapling_crypto::primitives::{ProofGenerationKey, ViewingKey};
-use zcash_primitives::{sapling::spend_sig, JUBJUB};
+use zcash_primitives::{sapling::{merkle_hash, spend_sig}, JUBJUB};
 use zcash_proofs::{
     load_parameters,
     sapling::{CommitmentTreeWitness, SaplingProvingContext},
@@ -201,27 +200,7 @@ pub extern "system" fn librustzcash_merkle_hash(
     // size of the representation
     let b_repr = read_le(unsafe { &(&*b)[..] });
 
-    let mut lhs = [false; 256];
-    let mut rhs = [false; 256];
-
-    for (a, b) in lhs.iter_mut().rev().zip(BitIterator::new(a_repr)) {
-        *a = b;
-    }
-
-    for (a, b) in rhs.iter_mut().rev().zip(BitIterator::new(b_repr)) {
-        *a = b;
-    }
-
-    let tmp = pedersen_hash::<Bls12, _>(
-        Personalization::MerkleTree(depth),
-        lhs.iter()
-            .map(|&x| x)
-            .take(Fr::NUM_BITS as usize)
-            .chain(rhs.iter().map(|&x| x).take(Fr::NUM_BITS as usize)),
-        &JUBJUB,
-    ).into_xy()
-        .0
-        .into_repr();
+    let tmp = merkle_hash(depth, &a_repr, &b_repr);
 
     // Should be okay, caller is responsible for ensuring the pointer
     // is a valid pointer to 32 bytes that can be mutated.
