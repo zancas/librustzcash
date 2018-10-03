@@ -9,6 +9,7 @@ extern crate sapling_crypto;
 
 use sapling_crypto::jubjub::JubjubBls12;
 
+pub mod merkle_tree;
 pub mod sapling;
 mod serialize;
 pub mod transaction;
