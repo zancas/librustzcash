@@ -52,23 +52,35 @@ pub fn compute_value_balance(
 
 /// A witness to a path from a postion in a particular Sapling commitment tree
 /// to the root of that tree.
+#[derive(Debug, PartialEq)]
 pub struct CommitmentTreeWitness {
     auth_path: Vec<Option<(Fr, bool)>>,
     position: u64,
 }
 
 impl CommitmentTreeWitness {
-    pub fn from_slice(mut witness: &[u8]) -> Result<Self, ()> {
+    pub fn from_path(auth_path: Vec<Option<(Fr, bool)>>, position: u64) -> Self {
+        CommitmentTreeWitness {
+            auth_path,
+            position,
+        }
+    }
+
+    pub fn from_slice(witness: &[u8]) -> Result<Self, ()> {
+        Self::from_slice_with_depth(witness, TREE_DEPTH)
+    }
+
+    pub fn from_slice_with_depth(mut witness: &[u8], depth: usize) -> Result<Self, ()> {
         // Skip the first byte, which should be "32" to signify the length of
         // the following vector of Pedersen hashes.
-        assert_eq!(witness[0], TREE_DEPTH as u8);
+        assert_eq!(witness[0], depth as u8);
         witness = &witness[1..];
 
         // Begin to construct the authentication path
-        let mut auth_path = vec![None; TREE_DEPTH];
+        let mut auth_path = vec![None; depth];
 
         // The vector works in reverse
-        for i in (0..TREE_DEPTH).rev() {
+        for i in (0..depth).rev() {
             // skip length of inner vector
             assert_eq!(witness[0], 32); // the length of a pedersen hash
             witness = &witness[1..];
@@ -102,7 +114,7 @@ impl CommitmentTreeWitness {
         // Given the position, let's finish constructing the authentication
         // path
         let mut tmp = position;
-        for i in 0..TREE_DEPTH {
+        for i in 0..depth {
             auth_path[i].as_mut().map(|p| p.1 = (tmp & 1) == 1);
 
             tmp >>= 1;
