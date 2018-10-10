@@ -52,10 +52,10 @@ pub fn compute_value_balance(
 
 /// A witness to a path from a postion in a particular Sapling commitment tree
 /// to the root of that tree.
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct CommitmentTreeWitness {
     auth_path: Vec<Option<(Fr, bool)>>,
-    position: u64,
+    pub position: u64,
 }
 
 impl CommitmentTreeWitness {
@@ -129,6 +129,10 @@ impl CommitmentTreeWitness {
             auth_path,
             position,
         })
+    }
+
+    pub fn root(&self) -> Fr {
+        self.auth_path.last().unwrap().unwrap().0
     }
 }
 

@@ -2,7 +2,7 @@ use failure::Error;
 
 use super::{ChainSync, CompactBlock};
 
-mod merkle_tree;
+pub mod merkle_tree;
 
 #[cfg(feature = "jsonrpc")]
 mod rpc;
