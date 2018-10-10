@@ -8,6 +8,10 @@ use zcash_primitives::{
     transaction::{Transaction, TxId},
 };
 
+mod builder;
+
+pub use self::builder::Builder;
+
 pub struct Memo([u8; 512]);
 
 impl Default for Memo {
@@ -27,6 +31,11 @@ enum TxStatus {
 
     /// Not yet sent, and expiry height has passed.
     PendingExpired { expires: u32 },
+
+    /// Sent and no internet, no server, no funds etc.
+    /// TODO: Does this need its own state, or can we just use the Pending
+    /// state plus external indicators?
+    Failed,
 
     /// Sent and in mempool (0 confirmations).
     InMemPool { expires: u32 },
@@ -79,6 +88,18 @@ impl WalletTx {
             tx: None,
         }
     }
+
+    // pub fn from_tx(tx: Transaction, created_time: u32) -> Self {
+    //     WalletTx {
+    //         txid: tx.txid(),
+    //         created_time,
+    //         status: TxStatus::Pending {
+    //             expires: tx.expiry_height,
+    //         },
+    //         notes: HashMap::new(),
+    //         tx: Some(tx),
+    //     }
+    // }
 
     pub fn is_verified(&self) -> bool {
         match self.status {

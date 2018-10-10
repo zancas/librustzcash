@@ -82,6 +82,7 @@ pub trait TxProver {
 }
 
 /// The result of trying to send a transaction.
+#[derive(Debug, PartialEq)]
 pub enum SendResult {
     /// The transaction has definitely reached the network, and is currently in
     /// the mempool.

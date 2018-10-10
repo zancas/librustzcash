@@ -367,7 +367,7 @@ impl IncrementalWitness {
 
 /// A witness to a path from a postion in a particular Sapling commitment tree
 /// to the root of that tree.
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct CommitmentTreeWitness {
     pub auth_path: Vec<Option<(Fr, bool)>>,
     pub position: u64,

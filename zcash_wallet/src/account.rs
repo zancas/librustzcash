@@ -1,11 +1,15 @@
+use failure::Error;
 use pairing::bls12_381::Bls12;
-use sapling_crypto::{jubjub::fs::Fs, primitives::PaymentAddress};
+use sapling_crypto::{
+    jubjub::fs::Fs,
+    primitives::{Diversifier, Note, PaymentAddress},
+};
 use std::rc::Rc;
 use transaction::WalletNote;
-use zcash_primitives::transaction::components::Amount;
+use zcash_primitives::{merkle_tree::IncrementalWitness, transaction::components::Amount};
 use zip32::ExtendedFullViewingKey;
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct AccountId(pub u32);
 
 /// A pool of ZEC controlled by a single spending key.
@@ -49,6 +53,55 @@ impl Account {
             pending.iter().fold(0, |acc, (_, value)| acc + value),
         );
         (Amount(spendable as i64), Amount(pending as i64))
+    }
+
+    /// Selects notes from this account that add up to at least the given
+    /// value. Returns an error if this account has insufficient spendable
+    /// funds.
+    pub(crate) fn select_notes(
+        &self,
+        value: Amount,
+    ) -> Result<Vec<(Diversifier, Note<Bls12>, IncrementalWitness)>, Error> {
+        let notes: Vec<(Diversifier, Note<Bls12>, IncrementalWitness)> = self
+            .notes
+            .iter()
+            .filter_map(|n| match n.tx_spent {
+                Some(_) => None,
+                None => if n.is_spendable() {
+                    Some(n)
+                } else {
+                    None
+                },
+            }).scan(0, |sum, n| {
+                if *sum > value.0 {
+                    None
+                } else {
+                    *sum = *sum + n.note.value as i64;
+                    Some(n)
+                }
+            }).map(|n| {
+                (
+                    n.diversifier.clone(),
+                    Note {
+                        g_d: n.note.g_d.clone(),
+                        pk_d: n.note.pk_d.clone(),
+                        value: n.note.value,
+                        r: n.note.r,
+                    },
+                    n.witness.as_ref().unwrap().clone(),
+                )
+            }).collect();
+
+        let sum: i64 = notes.iter().map(|(_, note, _)| note.value as i64).sum();
+        if sum < value.0 {
+            Err(format_err!(
+                "Insufficient notes for desired value (need {}, have {})",
+                value.0,
+                sum
+            ))
+        } else {
+            Ok(notes)
+        }
     }
 }
 
