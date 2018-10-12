@@ -6,4 +6,9 @@ authors = [
 ]
 
 [dependencies]
+hex = "0.3"
+pairing = { path = "../pairing" }
 protobuf = "2"
+sapling-crypto = { path = "../sapling-crypto" }
+zcash_primitives = { path = "../zcash_primitives" }
+zip32 = { path = "../zip32" }

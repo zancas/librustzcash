@@ -758,7 +758,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "zcash_client_backend"
 version = "0.0.0"
 dependencies = [
+ "hex 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pairing 0.14.2",
  "protobuf 2.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "sapling-crypto 0.0.1",
+ "zcash_primitives 0.0.0",
+ "zip32 0.0.0",
 ]
 
 [[package]]
