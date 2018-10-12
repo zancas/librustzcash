@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package proto;
+
+// A BlockID message contains identifiers to select a block: either a
+// height or a hash.
+message BlockID {
+    uint64 blockHeight = 1;
+    bytes blockHash = 2;
+}
+
+message CompactBlock {
+   BlockID id = 1;
+   repeated CompactTx vtx = 3;
+}
+
+message CompactTx {
+   uint64 txIndex = 1;
+   bytes txHash = 2;
+
+   repeated CompactSpend spends = 3;
+   repeated CompactOutput outputs = 4;
+}
+
+message CompactSpend {
+   bytes nf = 1;
+}
+
+message CompactOutput {
+   bytes cmu = 1;
+   bytes epk = 2;
+   bytes ciphertext = 3;
+}
