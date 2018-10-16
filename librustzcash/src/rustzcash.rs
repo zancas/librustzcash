@@ -325,8 +325,8 @@ pub extern "system" fn librustzcash_merkle_hash(
             .chain(rhs.iter().map(|&x| x).take(Fr::NUM_BITS as usize)),
         &JUBJUB,
     ).into_xy()
-        .0
-        .into_repr();
+    .0
+    .into_repr();
 
     // Should be okay, caller is responsible for ensuring the pointer
     // is a valid pointer to 32 bytes that can be mutated.
