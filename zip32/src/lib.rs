@@ -40,7 +40,7 @@ fn prf_expand_vec(sk: &[u8], ts: &[&[u8]]) -> Blake2bResult {
 
 /// An outgoing viewing key
 #[derive(Clone, Copy, PartialEq)]
-pub struct OutgoingViewingKey([u8; 32]);
+pub struct OutgoingViewingKey(pub [u8; 32]);
 
 impl OutgoingViewingKey {
     fn derive_child(&self, i_l: &[u8]) -> Self {

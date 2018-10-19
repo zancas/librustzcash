@@ -7,12 +7,19 @@ authors = [
 
 [dependencies]
 bech32 = "0.5"
+byteorder = "1"
 hex = "0.3"
 pairing = { path = "../pairing" }
 protobuf = "2"
+rand = "0.4"
 sapling-crypto = { path = "../sapling-crypto" }
 zcash_primitives = { path = "../zcash_primitives" }
 zip32 = { path = "../zip32" }
 
-[dev-dependencies]
-rand = "0.4"
+[dependencies.blake2-rfc]
+git = "https://github.com/gtank/blake2-rfc"
+rev = "7a5b5fc99ae483a0043db7547fb79a6fa44b88a9"
+
+[dependencies.chacha20-poly1305-aead]
+git = "https://github.com/gtank/chacha20-poly1305-aead"
+rev = "124eaec847e67369d28a7db808debde0362656cb"

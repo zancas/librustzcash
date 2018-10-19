@@ -158,6 +158,14 @@ version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
+name = "chacha20-poly1305-aead"
+version = "0.1.2"
+source = "git+https://github.com/gtank/chacha20-poly1305-aead?rev=124eaec847e67369d28a7db808debde0362656cb#124eaec847e67369d28a7db808debde0362656cb"
+dependencies = [
+ "constant_time_eq 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "clippy"
 version = "0.0.200"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -764,6 +772,9 @@ name = "zcash_client_backend"
 version = "0.0.0"
 dependencies = [
  "bech32 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "blake2-rfc 0.2.18 (git+https://github.com/gtank/blake2-rfc?rev=7a5b5fc99ae483a0043db7547fb79a6fa44b88a9)",
+ "byteorder 1.2.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "chacha20-poly1305-aead 0.1.2 (git+https://github.com/gtank/chacha20-poly1305-aead?rev=124eaec847e67369d28a7db808debde0362656cb)",
  "hex 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "pairing 0.14.2",
  "protobuf 2.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -833,6 +844,7 @@ dependencies = [
 "checksum cargo_metadata 0.5.8 (registry+https://github.com/rust-lang/crates.io-index)" = "1efca0b863ca03ed4c109fb1c55e0bc4bbeb221d3e103d86251046b06a526bd0"
 "checksum cc 1.0.22 (registry+https://github.com/rust-lang/crates.io-index)" = "4a6007c146fdd28d4512a794b07ffe9d8e89e6bf86e2e0c4ddff2e1fb54a0007"
 "checksum cfg-if 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)" = "0c4e7bb64a8ebb0d856483e1e682ea3422f883c5f5615a90d51a2c82fe87fdd3"
+"checksum chacha20-poly1305-aead 0.1.2 (git+https://github.com/gtank/chacha20-poly1305-aead?rev=124eaec847e67369d28a7db808debde0362656cb)" = "<none>"
 "checksum clippy 0.0.200 (registry+https://github.com/rust-lang/crates.io-index)" = "927a1f79af10deb103df108347f23c6b7fa1731c953d6fb24d68be1748a0993f"
 "checksum clippy_lints 0.0.200 (registry+https://github.com/rust-lang/crates.io-index)" = "d2432663f6bdb90255dcf9df5ca504f99b575bb471281591138f62f9d31f863b"
 "checksum constant_time_eq 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)" = "8ff012e225ce166d4422e0e78419d901719760f62ae2b7969ca6b564d1b54a9e"
