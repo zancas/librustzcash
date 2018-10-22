@@ -750,6 +750,10 @@ version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
+name = "zcash_client_backend"
+version = "0.0.0"
+
+[[package]]
 name = "zcash_primitives"
 version = "0.0.0"
 dependencies = [
@@ -775,10 +779,6 @@ dependencies = [
  "sapling-crypto 0.0.1",
  "zcash_primitives 0.0.0",
 ]
-
-[[package]]
-name = "zcash_wallet"
-version = "0.0.0"
 
 [[package]]
 name = "zip32"
