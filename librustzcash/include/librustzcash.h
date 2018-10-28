@@ -308,6 +308,14 @@ extern "C" {
         unsigned char *j_ret,
         unsigned char *addr_ret
     );
+
+    /// Creates an Ire router. Please free this when you're done.
+    void * librustzcash_ire_router_init(
+        const char* config_file
+    );
+
+    /// Frees an Ire router returned from `librustzcash_ire_router_init`.
+    void librustzcash_ire_router_free(void *);
 }
 
 #endif // LIBRUSTZCASH_INCLUDE_H_

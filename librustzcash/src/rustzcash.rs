@@ -1,6 +1,7 @@
 extern crate bellman;
 extern crate blake2_rfc;
 extern crate byteorder;
+extern crate ire;
 extern crate libc;
 extern crate pairing;
 extern crate rand;
@@ -1708,4 +1709,27 @@ pub extern "system" fn librustzcash_zip32_xfvk_address(
         .expect("should be able to serialize a PaymentAddress");
 
     true
+}
+
+#[no_mangle]
+pub extern "system" fn librustzcash_ire_router_init(
+    config_file: *const c_char,
+) -> *mut ire::router::Router {
+    let router = Box::new(
+        ire::router::Builder::new()
+            .config_file(
+                unsafe { CStr::from_ptr(config_file) }
+                    .to_str()
+                    .expect("config_file is not UTF-8")
+                    .to_string(),
+            ).build()
+            .unwrap(),
+    );
+
+    Box::into_raw(router)
+}
+
+#[no_mangle]
+pub extern "system" fn librustzcash_ire_router_free(router: *mut ire::router::Router) {
+    drop(unsafe { Box::from_raw(router) });
 }
