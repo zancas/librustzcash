@@ -12,9 +12,9 @@ homepage = "https://github.com/zcash-hackworks/zip32"
 repository = "https://github.com/zcash-hackworks/zip32"
 
 [dependencies]
-aes = "0.2"
+aes = "0.3"
 byteorder = "1"
-fpe = "0.1"
+fpe = { git = "https://github.com/str4d/fpe", branch = "release-0.2" }
 lazy_static = "1.0"
 pairing = { path = "../pairing" }
 sapling-crypto = { path = "../sapling-crypto" }
