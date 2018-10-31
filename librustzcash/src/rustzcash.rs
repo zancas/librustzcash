@@ -7,6 +7,7 @@ extern crate libc;
 extern crate pairing;
 extern crate rand;
 extern crate sapling_crypto;
+extern crate simplelog;
 extern crate tokio;
 extern crate zip32;
 
@@ -48,7 +49,7 @@ use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use futures::Future;
 
 use rand::{OsRng, Rand, Rng};
-use std::io::{self, BufReader};
+use std::io::{self, BufReader, Write};
 
 use libc::{c_char, c_uchar, int64_t, size_t, uint32_t, uint64_t};
 use std::ffi::CStr;
@@ -128,6 +129,36 @@ fn fixed_scalar_mult(from: &[u8], p_g: FixedGenerators) -> edwards::Point<Bls12,
     let f = read_fs(from);
 
     JUBJUB.generator(p_g).mul(f, &JUBJUB)
+}
+
+struct LogWriter {
+    log_printer: extern "C" fn(line: *const c_char),
+}
+
+impl Write for LogWriter {
+    fn write(&mut self, msg: &[u8]) -> io::Result<usize> {
+        let mut nul_terminated = Vec::with_capacity(msg.len() + 1);
+        nul_terminated.extend_from_slice(msg);
+        nul_terminated.push(0);
+
+        let cstr = CStr::from_bytes_with_nul(&nul_terminated).unwrap();
+        (self.log_printer)(cstr.as_ptr());
+
+        Ok(msg.len())
+    }
+
+    fn flush(&mut self) -> io::Result<()> {
+        Ok(())
+    }
+}
+
+#[no_mangle]
+pub extern "system" fn librustzcash_init_logging(log_printer: extern "C" fn(line: *const c_char)) {
+    simplelog::WriteLogger::init(
+        simplelog::LevelFilter::Debug,
+        simplelog::Config::default(),
+        LogWriter { log_printer },
+    ).unwrap();
 }
 
 #[cfg(not(target_os = "windows"))]

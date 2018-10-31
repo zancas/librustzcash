@@ -720,6 +720,7 @@ dependencies = [
  "pairing 0.14.2",
  "rand 0.4.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "sapling-crypto 0.0.1",
+ "simplelog 0.5.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "tokio 0.1.11 (registry+https://github.com/rust-lang/crates.io-index)",
  "zip32 0.0.0",
 ]
@@ -1311,6 +1312,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "simplelog"
+version = "0.5.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "chrono 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
+ "log 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "siphasher"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1895,6 +1905,7 @@ dependencies = [
 "checksum signatory 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)" = "1024fdb7cdbca1434369e8d931a7549faaaf390c5fcc4289fb3270b33543596e"
 "checksum signatory-dalek 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)" = "bf5b791dd2c0bee3b20ad31158fc59da0c62ca9536d7d3258089ed4355933dd7"
 "checksum signatory-ring 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)" = "597fe1ecf8e1d3e68fd8f74b6b09fcfd50e06fdfe9c3d8ad8d5923204a121a93"
+"checksum simplelog 0.5.3 (registry+https://github.com/rust-lang/crates.io-index)" = "2e95345f185d5adeb8ec93459d2dc99654e294cc6ccf5b75414d8ea262de9a13"
 "checksum siphasher 0.2.3 (registry+https://github.com/rust-lang/crates.io-index)" = "0b8de496cf83d4ed58b6be86c3a275b8602f6ffe98d3024a869e124147a9a3ac"
 "checksum slab 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)" = "5f9776d6b986f77b35c6cf846c11ad986ff128fe0b2b63a3628e3755e8d3102d"
 "checksum smallvec 0.6.5 (registry+https://github.com/rust-lang/crates.io-index)" = "153ffa32fd170e9944f7e0838edf824a754ec4c1fc64746fcc9fe1f8fa602e5d"

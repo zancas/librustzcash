@@ -10,6 +10,8 @@ extern "C" {
     typedef uint8_t codeunit;
 #endif
 
+    void librustzcash_init_logging(void(const char*));
+
     void librustzcash_to_scalar(const unsigned char *input, unsigned char *result);
 
     void librustzcash_ask_to_ak(const unsigned char *ask, unsigned char *result);

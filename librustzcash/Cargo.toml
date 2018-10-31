@@ -23,6 +23,7 @@ lazy_static = "1"
 byteorder = "1"
 rand = "0.4"
 sapling-crypto = { path = "../sapling-crypto" }
+simplelog = { version = "0.5", default-features = false }
 tokio = "0.1"
 zip32 = { path = "../zip32" }
 
