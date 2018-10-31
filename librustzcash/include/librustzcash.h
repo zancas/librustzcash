@@ -316,6 +316,12 @@ extern "C" {
 
     /// Frees an Ire router returned from `librustzcash_ire_router_init`.
     void librustzcash_ire_router_free(void *);
+
+    /// Returns a runner that can be used to drive the give router.
+    void * librustzcash_ire_router_start(void *);
+
+    /// Drives a router using the given runner.
+    void librustzcash_ire_drive_router(void *);
 }
 
 #endif // LIBRUSTZCASH_INCLUDE_H_

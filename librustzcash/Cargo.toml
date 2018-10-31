@@ -15,6 +15,7 @@ crate-type = ["staticlib"]
 
 [dependencies]
 bellman = { path = "../bellman" }
+futures = "0.1"
 ire = { git = "https://github.com/str4d/ire", branch = "bundling-test" }
 libc = "0.2"
 pairing = { path = "../pairing" }
@@ -22,6 +23,7 @@ lazy_static = "1"
 byteorder = "1"
 rand = "0.4"
 sapling-crypto = { path = "../sapling-crypto" }
+tokio = "0.1"
 zip32 = { path = "../zip32" }
 
 [dependencies.blake2-rfc]

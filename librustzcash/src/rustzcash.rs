@@ -1,11 +1,13 @@
 extern crate bellman;
 extern crate blake2_rfc;
 extern crate byteorder;
+extern crate futures;
 extern crate ire;
 extern crate libc;
 extern crate pairing;
 extern crate rand;
 extern crate sapling_crypto;
+extern crate tokio;
 extern crate zip32;
 
 mod hashreader;
@@ -42,6 +44,8 @@ use bellman::groth16::{
 use blake2_rfc::blake2s::Blake2s;
 
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
+
+use futures::Future;
 
 use rand::{OsRng, Rand, Rng};
 use std::io::{self, BufReader};
@@ -1732,4 +1736,22 @@ pub extern "system" fn librustzcash_ire_router_init(
 #[no_mangle]
 pub extern "system" fn librustzcash_ire_router_free(router: *mut ire::router::Router) {
     drop(unsafe { Box::from_raw(router) });
+}
+
+pub struct IreRouterRunner(Box<Future<Item = (), Error = ()> + Send>);
+
+#[no_mangle]
+pub extern "system" fn librustzcash_ire_router_start(
+    router: *mut ire::router::Router,
+) -> *mut IreRouterRunner {
+    let router = unsafe { &mut *router };
+
+    let runner = Box::new(IreRouterRunner(Box::new(router.start().map_err(|_| ()))));
+
+    Box::into_raw(runner)
+}
+
+#[no_mangle]
+pub extern "system" fn librustzcash_ire_drive_router(runner: *mut IreRouterRunner) {
+    tokio::run(unsafe { Box::from_raw(runner) }.0);
 }
