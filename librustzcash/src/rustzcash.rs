@@ -59,12 +59,13 @@ use std::os::windows::ffi::OsStringExt;
 
 use sapling_crypto::primitives::{ProofGenerationKey, ViewingKey};
 use zcash_primitives::{
+    merkle_tree::CommitmentTreeWitness,
     sapling::{merkle_hash, spend_sig},
     JUBJUB,
 };
 use zcash_proofs::{
     load_parameters,
-    sapling::{CommitmentTreeWitness, SaplingProvingContext, SaplingVerificationContext},
+    sapling::{SaplingProvingContext, SaplingVerificationContext},
 };
 
 pub mod equihash;
