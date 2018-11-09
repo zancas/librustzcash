@@ -4,6 +4,12 @@
 #include <stdint.h>
 
 extern "C" {
+#ifdef WIN32
+    typedef uint16_t codeunit;
+#else
+    typedef uint8_t codeunit;
+#endif
+
     void librustzcash_to_scalar(const unsigned char *input, unsigned char *result);
 
     void librustzcash_ask_to_ak(const unsigned char *ask, unsigned char *result);
@@ -19,11 +25,14 @@ extern "C" {
     /// Loads the zk-SNARK parameters into memory and saves
     /// paths as necessary. Only called once.
     void librustzcash_init_zksnark_params(
-        const char* spend_path,
+        const codeunit* spend_path,
+        size_t spend_path_len,
         const char* spend_hash,
-        const char* output_path,
+        const codeunit* output_path,
+        size_t output_path_len,
         const char* output_hash,
-        const char* sprout_path,
+        const codeunit* sprout_path,
+        size_t sprout_path_len,
         const char* sprout_hash
     );
 
@@ -269,6 +278,35 @@ extern "C" {
         const unsigned char *cm2,
         uint64_t vpub_old,
         uint64_t vpub_new
+    );
+
+    /// Derive the master ExtendedSpendingKey from a seed.
+    void librustzcash_zip32_xsk_master(
+        const unsigned char *seed,
+        size_t seedlen,
+        unsigned char *xsk_master
+    );
+
+    /// Derive a child ExtendedSpendingKey from a parent.
+    void librustzcash_zip32_xsk_derive(
+        const unsigned char *xsk_parent,
+        uint32_t i,
+        unsigned char *xsk_i
+    );
+
+    /// Derive a child ExtendedFullViewingKey from a parent.
+    bool librustzcash_zip32_xfvk_derive(
+        const unsigned char *xfvk_parent,
+        uint32_t i,
+        unsigned char *xfvk_i
+    );
+
+    /// Derive a PaymentAddress from an ExtendedFullViewingKey.
+    bool librustzcash_zip32_xfvk_address(
+        const unsigned char *xfvk,
+        const unsigned char *j,
+        unsigned char *j_ret,
+        unsigned char *addr_ret
     );
 }
 
