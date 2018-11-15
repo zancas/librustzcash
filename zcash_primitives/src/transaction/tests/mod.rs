@@ -5,12 +5,12 @@ use super::{
 };
 
 mod data;
-use self::data::TX_READ_WRITE;
 
 
 #[test]
 fn tx_read_write() {
-    let data = TX_READ_WRITE;
+    use self::data::TX_READ_WRITE;
+    let data = &TX_READ_WRITE;
     let tx = Transaction::read(&data[..]).unwrap();
 
     let mut encoded = Vec::with_capacity(data.len());
