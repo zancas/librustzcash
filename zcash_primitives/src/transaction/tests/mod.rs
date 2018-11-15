@@ -18,19 +18,12 @@ fn tx_read_write() {
     assert_eq!(&data[..], &encoded[..]);
 }
 
+
 #[test]
 fn zip_0143() {
-    struct TestVector {
-        tx: Vec<u8>,
-        script_code: Vec<u8>,
-        transparent_input: Option<u32>,
-        hash_type: u32,
-        amount: i64,
-        consensus_branch_id: u32,
-        sighash: [u8; 32],
-    };
 
     // From https://github.com/zcash-hackworks/zcash-test-vectors/blob/master/zip_0143.py
+    use self::data::TestVector;
     let test_vectors = vec![
         TestVector {
             tx: vec![
