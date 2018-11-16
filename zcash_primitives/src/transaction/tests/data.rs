@@ -85,17 +85,17 @@ pub mod tx_read_write {
         ];
 }
 
+pub struct TestVector {
+    pub tx: Vec<u8>,
+    pub script_code: Vec<u8>,
+    pub transparent_input: Option<u32>,
+    pub hash_type: u32,
+    pub amount: i64,
+    pub consensus_branch_id: u32,
+    pub sighash: [u8; 32],
+}
 pub mod zip_0143 {
-    pub struct TestVector {
-        pub tx: Vec<u8>,
-        pub script_code: Vec<u8>,
-        pub transparent_input: Option<u32>,
-        pub hash_type: u32,
-        pub amount: i64,
-        pub consensus_branch_id: u32,
-        pub sighash: [u8; 32],
-    }
-
+    use super::TestVector;
     pub fn make_zip_0143_test_vectors() -> Vec<TestVector> {
         // From https://github.com/zcash-hackworks/zcash-test-vectors/blob/master/zip_0143.py
         vec![
