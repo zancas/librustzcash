@@ -9,9 +9,8 @@ mod data;
 
 #[test]
 fn tx_read_write() {
-    let data = &self::data::TX_READ_WRITE;
+    let data = &self::data::tx_read_write::TX_READ_WRITE;
     let tx = Transaction::read(&data[..]).unwrap();
-
     let mut encoded = Vec::with_capacity(data.len());
     tx.write(&mut encoded).unwrap();
     assert_eq!(&data[..], &encoded[..]);
@@ -20,8 +19,7 @@ fn tx_read_write() {
 
 #[test]
 fn zip_0143() {
-    // From https://github.com/zcash-hackworks/zcash-test-vectors/blob/master/zip_0143.py
-    for tv in self::data::make_zip_0143_test_vectors() {
+    for tv in self::data::zip_0143::make_zip_0143_test_vectors() {
         let tx = Transaction::read(&tv.tx[..]).unwrap();
         let transparent_input = if let Some(n) = tv.transparent_input {
             Some((n as usize, Script(tv.script_code), Amount(tv.amount)))
