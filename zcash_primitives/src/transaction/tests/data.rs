@@ -93,7 +93,8 @@ pub struct TestVector {
     pub sighash: [u8; 32],
 }
 
-pub fn MAKE_TEST_VECTORS() -> Vec<TestVector> {
+pub fn make_zip_0143_test_vectors() -> Vec<TestVector> {
+    // From https://github.com/zcash-hackworks/zcash-test-vectors/blob/master/zip_0143.py
     vec![
         TestVector {
             tx: vec![
