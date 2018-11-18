@@ -86,33 +86,31 @@ impl Vector {
 mod tests {
     use super::*;
 
+    fn validate_compactsize(value: usize, expected: Vec<u8>) {
+        let mut data = Vec::new();
+        CompactSize::write(&mut data, value).unwrap();
+        assert_eq!(data[..], expected[..]);
+        match CompactSize::read(&data[..]) {
+            Ok(contents) => assert_eq!(contents, value),
+            Err(e) => panic!("Unexpected error: {:?}", e),
+        }
+        ()
+    }
     #[test]
     fn compact_size() {
-        macro_rules! eval {
-            ($value:expr, $expected:expr) => {
-                let mut data = vec![];
-                CompactSize::write(&mut data, $value).unwrap();
-                assert_eq!(&data[..], &$expected[..]);
-                match CompactSize::read(&data[..]) {
-                    Ok(n) => assert_eq!(n, $value),
-                    Err(e) => panic!("Unexpected error: {:?}", e),
-                }
-            };
-        }
+        validate_compactsize(0, [0].to_vec());
+        validate_compactsize(1, [1].to_vec());
+        validate_compactsize(252, [252].to_vec());
+        validate_compactsize(253, [253, 253, 0].to_vec());
+        validate_compactsize(254, [253, 254, 0].to_vec());
+        validate_compactsize(255, [253, 255, 0].to_vec());
+        validate_compactsize(256, [253, 0, 1].to_vec());
+        validate_compactsize(256, [253, 0, 1].to_vec());
+        validate_compactsize(65535, [253, 255, 255].to_vec());
+        validate_compactsize(65536, [254, 0, 0, 1, 0].to_vec());
+        validate_compactsize(65537, [254, 1, 0, 1, 0].to_vec());
 
-        eval!(0, [0]);
-        eval!(1, [1]);
-        eval!(252, [252]);
-        eval!(253, [253, 253, 0]);
-        eval!(254, [253, 254, 0]);
-        eval!(255, [253, 255, 0]);
-        eval!(256, [253, 0, 1]);
-        eval!(256, [253, 0, 1]);
-        eval!(65535, [253, 255, 255]);
-        eval!(65536, [254, 0, 0, 1, 0]);
-        eval!(65537, [254, 1, 0, 1, 0]);
-
-        eval!(33554432, [254, 0, 0, 0, 2]);
+        validate_compactsize(33554432, [254, 0, 0, 0, 2].to_vec());
 
         {
             let value = 33554433;
