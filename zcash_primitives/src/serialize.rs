@@ -86,6 +86,12 @@ impl Vector {
 mod tests {
     use super::*;
 
+    fn validate_compactsize(value: usize, expected: Vec<u8>) {
+        let mut data = Vec::new();
+        CompactSize::write(&mut data, value).unwrap();
+        assert_eq!(&data[..], &expected[..]);
+        ()
+    }
     #[test]
     fn compact_size() {
         macro_rules! eval {
