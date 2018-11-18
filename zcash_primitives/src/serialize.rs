@@ -98,18 +98,6 @@ mod tests {
     }
     #[test]
     fn compact_size() {
-        macro_rules! eval {
-            ($value:expr, $expected:expr) => {
-                let mut data = vec![];
-                CompactSize::write(&mut data, $value).unwrap();
-                assert_eq!(&data[..], &$expected[..]);
-                match CompactSize::read(&data[..]) {
-                    Ok(n) => assert_eq!(n, $value),
-                    Err(e) => panic!("Unexpected error: {:?}", e),
-                }
-            };
-        }
-
         validate_compactsize(0, [0].to_vec());
         validate_compactsize(1, [1].to_vec());
         validate_compactsize(252, [252].to_vec());
