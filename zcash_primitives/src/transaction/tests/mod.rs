@@ -1,3 +1,4 @@
+#![deny(warnings)]
 use super::{
     components::{Amount, Script},
     sighash::signature_hash,
