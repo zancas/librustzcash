@@ -1,3 +1,28 @@
+use std;
+use std::fmt;
+
+/// An enum whose variants exhaustively represent the Error states that can arise from this module.
+#[derive(Debug)]
+pub enum ProverError {
+    SiblingNotFrElement,
+    VariantTwo,
+    VariantThree,
+    VariantFour,
+    VariantFive,
+}
+
+impl fmt::Display for ProverError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        write!(f, "HAHAHA")
+    }
+}
+
+impl std::error::Error for ProverError {
+    fn description(&self) -> &str {
+        "Hmmm"
+    }
+}
+
 use bellman::groth16::{
     create_random_proof, verify_proof, Parameters, PreparedVerifyingKey, Proof,
 };
@@ -21,13 +46,14 @@ use super::compute_value_balance;
 
 /// A witness to a path from a postion in a particular Sapling commitment tree
 /// to the root of that tree.
+#[derive(Debug)]
 pub struct CommitmentTreeWitness {
     auth_path: Vec<Option<(Fr, bool)>>,
     position: u64,
 }
 
 impl CommitmentTreeWitness {
-    pub fn from_slice(mut witness: &[u8]) -> Result<Self, ()> {
+    pub fn from_slice(mut witness: &[u8]) -> Result<Self, ProverError> {
         // Skip the first byte, which should be "32" to signify the length of
         // the following vector of Pedersen hashes.
         assert_eq!(witness[0], TREE_DEPTH as u8);
@@ -39,6 +65,8 @@ impl CommitmentTreeWitness {
         // The vector works in reverse
         for i in (0..TREE_DEPTH).rev() {
             // skip length of inner vector
+            println!("The index 'i' is: {}", i);
+            println!("The witness is: {:?}", witness);
             assert_eq!(witness[0], 32); // the length of a pedersen hash
             witness = &witness[1..];
 
@@ -54,7 +82,7 @@ impl CommitmentTreeWitness {
                 Fr::from_repr(repr)
             } {
                 Ok(p) => p,
-                Err(_) => return Err(()),
+                Err(_) => return Err(ProverError::SiblingNotFrElement),
             };
 
             // Set the value in the auth path; we put false here
@@ -87,6 +115,21 @@ impl CommitmentTreeWitness {
             position,
         })
     }
+}
+
+#[test]
+pub fn test_commitmenttreewitness_from_slice() {
+    let mut test_array = &[0u8; 32];
+    test_array[0] = TREE_DEPTH as u8;
+    println!("{:?}", TREE_DEPTH);
+    println!("{:?}", test_array);
+    test_array = &test_array[1..];
+    println!("{:?}", test_array);
+    println!("test_array.len(): {:?}", test_array.len());
+    for i in (0..5).rev() {
+        println!("{}", i);
+    }
+    //let tctw = CommitmentTreeWitness::from_slice(&test_array);
 }
 
 /// A context object for creating the Sapling components of a Zcash transaction.
@@ -125,7 +168,7 @@ impl SaplingProvingContext {
             edwards::Point<Bls12, Unknown>,
             PublicKey<Bls12>,
         ),
-        (),
+        ProverError,
     > {
         // Initialize secure RNG
         let mut rng = OsRng::new().expect("should be able to construct RNG");
@@ -154,7 +197,7 @@ impl SaplingProvingContext {
         // Construct the payment address with the viewing key / diversifier
         let payment_address = match viewing_key.into_payment_address(diversifier, params) {
             Some(p) => p,
-            None => return Err(()),
+            None => return Err(ProverError::VariantTwo),
         };
 
         // This is the result of the re-randomization, we compute it for the caller
@@ -225,7 +268,7 @@ impl SaplingProvingContext {
 
             // Any other case
             _ => {
-                return Err(());
+                return Err(ProverError::VariantThree);
             }
         }
 
@@ -316,7 +359,7 @@ impl SaplingProvingContext {
         value_balance: i64,
         sighash: &[u8; 32],
         params: &JubjubBls12,
-    ) -> Result<Signature, ()> {
+    ) -> Result<Signature, ProverError> {
         // Initialize secure RNG
         let mut rng = OsRng::new().expect("should be able to construct RNG");
 
@@ -333,7 +376,7 @@ impl SaplingProvingContext {
             // Compute value balance
             let mut value_balance = match compute_value_balance(value_balance, params) {
                 Some(a) => a,
-                None => return Err(()),
+                None => return Err(ProverError::VariantFour),
             };
 
             // Subtract value_balance from current bvk to get final bvk
@@ -343,7 +386,7 @@ impl SaplingProvingContext {
 
             // The result should be the same, unless the provided valueBalance is wrong.
             if bvk.0 != tmp {
-                return Err(());
+                return Err(ProverError::VariantFive);
             }
         }
 
