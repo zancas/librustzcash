@@ -33,15 +33,15 @@ impl compact_formats::CompactBlock {
     /// # Panics
     ///
     /// This function will panic if [`CompactBlock.header`] is not set and
-    /// [`CompactBlock.prevHash`] is not exactly 32 bytes.
+    /// [`CompactBlock.prev_hash`] is not exactly 32 bytes.
     ///
     /// [`CompactBlock.header`]: #structfield.header
-    /// [`CompactBlock.prevHash`]: #structfield.prevHash
+    /// [`CompactBlock.prev_hash`]: #structfield.prev_hash
     pub fn prev_hash(&self) -> BlockHash {
         if let Some(header) = self.header() {
             header.prev_block
         } else {
-            BlockHash::from_slice(&self.prevHash)
+            BlockHash::from_slice(&self.prev_hash)
         }
     }
 

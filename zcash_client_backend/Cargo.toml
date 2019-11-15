@@ -12,6 +12,9 @@ license = "MIT OR Apache-2.0"
 edition = "2018"
 
 [dependencies]
+bytes = "0.4"
+tower-grpc = "0.1.1"
+prost = "0.5"
 bech32 = "0.7"
 ff = { version = "0.5.0", path = "../ff" }
 hex = "0.3"
@@ -22,6 +25,7 @@ zcash_primitives = { version = "0.1.0", path = "../zcash_primitives" }
 
 [build-dependencies]
 protobuf-codegen-pure = "2"
+tower-grpc-build = { git = "https://github.com/tower-rs/tower-grpc",  features = ["tower-hyper"]  }
 
 [dev-dependencies]
 rand_core = "0.5"
