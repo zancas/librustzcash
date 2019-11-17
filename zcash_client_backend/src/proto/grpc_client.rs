@@ -17,7 +17,7 @@
 #![allow(unsafe_code)]
 #![allow(unused_imports)]
 #![allow(unused_results)]
-//! Generated file from `client.proto`
+//! Generated file from `grpc_client.proto`
 
 use protobuf::Message as Message_imported_for_functions;
 use protobuf::ProtobufEnum as ProtobufEnum_imported_for_functions;
@@ -2188,26 +2188,26 @@ impl ::protobuf::reflect::ProtobufValue for TransparentAddressBlockFilter {
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
-    \n\x0cclient.proto\x12\x15cash.z.wallet.sdk.rpc\"-\n\x07BlockID\x12\x10\
-    \n\x06height\x18\x01\x20\x01(\x04B\0\x12\x0e\n\x04hash\x18\x02\x20\x01(\
-    \x0cB\0:\0\"n\n\nBlockRange\x12/\n\x05start\x18\x01\x20\x01(\x0b2\x1e.ca\
-    sh.z.wallet.sdk.rpc.BlockIDB\0\x12-\n\x03end\x18\x02\x20\x01(\x0b2\x1e.c\
-    ash.z.wallet.sdk.rpc.BlockIDB\0:\0\"^\n\x08TxFilter\x12/\n\x05block\x18\
-    \x01\x20\x01(\x0b2\x1e.cash.z.wallet.sdk.rpc.BlockIDB\0\x12\x0f\n\x05ind\
-    ex\x18\x02\x20\x01(\x04B\0\x12\x0e\n\x04hash\x18\x03\x20\x01(\x0cB\0:\0\
-    \"4\n\x0eRawTransaction\x12\x0e\n\x04data\x18\x01\x20\x01(\x0cB\0\x12\
-    \x10\n\x06height\x18\x02\x20\x01(\x04B\0:\0\"=\n\x0cSendResponse\x12\x13\
-    \n\terrorCode\x18\x01\x20\x01(\x05B\0\x12\x16\n\x0cerrorMessage\x18\x02\
-    \x20\x01(\tB\0:\0\"\r\n\tChainSpec:\0\"\t\n\x05Empty:\0\"\xb7\x01\n\nLig\
-    htdInfo\x12\x11\n\x07version\x18\x01\x20\x01(\tB\0\x12\x10\n\x06vendor\
-    \x18\x02\x20\x01(\tB\0\x12\x16\n\x0ctaddrSupport\x18\x03\x20\x01(\x08B\0\
-    \x12\x13\n\tchainName\x18\x04\x20\x01(\tB\0\x12!\n\x17saplingActivationH\
-    eight\x18\x05\x20\x01(\x04B\0\x12\x1b\n\x11consensusBranchId\x18\x06\x20\
-    \x01(\tB\0\x12\x15\n\x0bblockHeight\x18\x07\x20\x01(\x04B\0:\0\")\n\x12T\
-    ransparentAddress\x12\x11\n\x07address\x18\x01\x20\x01(\tB\0:\0\"h\n\x1d\
-    TransparentAddressBlockFilter\x12\x11\n\x07address\x18\x01\x20\x01(\tB\0\
-    \x122\n\x05range\x18\x02\x20\x01(\x0b2!.cash.z.wallet.sdk.rpc.BlockRange\
-    B\0:\0B\0b\x06proto3\
+    \n\x11grpc_client.proto\x12\x15cash.z.wallet.sdk.rpc\"-\n\x07BlockID\x12\
+    \x10\n\x06height\x18\x01\x20\x01(\x04B\0\x12\x0e\n\x04hash\x18\x02\x20\
+    \x01(\x0cB\0:\0\"n\n\nBlockRange\x12/\n\x05start\x18\x01\x20\x01(\x0b2\
+    \x1e.cash.z.wallet.sdk.rpc.BlockIDB\0\x12-\n\x03end\x18\x02\x20\x01(\x0b\
+    2\x1e.cash.z.wallet.sdk.rpc.BlockIDB\0:\0\"^\n\x08TxFilter\x12/\n\x05blo\
+    ck\x18\x01\x20\x01(\x0b2\x1e.cash.z.wallet.sdk.rpc.BlockIDB\0\x12\x0f\n\
+    \x05index\x18\x02\x20\x01(\x04B\0\x12\x0e\n\x04hash\x18\x03\x20\x01(\x0c\
+    B\0:\0\"4\n\x0eRawTransaction\x12\x0e\n\x04data\x18\x01\x20\x01(\x0cB\0\
+    \x12\x10\n\x06height\x18\x02\x20\x01(\x04B\0:\0\"=\n\x0cSendResponse\x12\
+    \x13\n\terrorCode\x18\x01\x20\x01(\x05B\0\x12\x16\n\x0cerrorMessage\x18\
+    \x02\x20\x01(\tB\0:\0\"\r\n\tChainSpec:\0\"\t\n\x05Empty:\0\"\xb7\x01\n\
+    \nLightdInfo\x12\x11\n\x07version\x18\x01\x20\x01(\tB\0\x12\x10\n\x06ven\
+    dor\x18\x02\x20\x01(\tB\0\x12\x16\n\x0ctaddrSupport\x18\x03\x20\x01(\x08\
+    B\0\x12\x13\n\tchainName\x18\x04\x20\x01(\tB\0\x12!\n\x17saplingActivati\
+    onHeight\x18\x05\x20\x01(\x04B\0\x12\x1b\n\x11consensusBranchId\x18\x06\
+    \x20\x01(\tB\0\x12\x15\n\x0bblockHeight\x18\x07\x20\x01(\x04B\0:\0\")\n\
+    \x12TransparentAddress\x12\x11\n\x07address\x18\x01\x20\x01(\tB\0:\0\"h\
+    \n\x1dTransparentAddressBlockFilter\x12\x11\n\x07address\x18\x01\x20\x01\
+    (\tB\0\x122\n\x05range\x18\x02\x20\x01(\x0b2!.cash.z.wallet.sdk.rpc.Bloc\
+    kRangeB\0:\0B\0b\x06proto3\
 ";
 
 static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {

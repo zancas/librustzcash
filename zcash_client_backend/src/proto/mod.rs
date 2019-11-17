@@ -9,7 +9,7 @@ use zcash_primitives::{
 };
 
 pub mod compact_formats;
-pub mod client;
+pub mod grpc_client;
 
 impl compact_formats::CompactBlock {
     /// Returns the [`BlockHash`] for this block.
