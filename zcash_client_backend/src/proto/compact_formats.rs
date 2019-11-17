@@ -175,7 +175,7 @@ impl CompactBlock {
         ::std::mem::replace(&mut self.header, ::std::vec::Vec::new())
     }
 
-    // repeated .cash.z.wallet.sdk.rpc.CompactTx vtx = 7;
+    // repeated .compact_formats.CompactTx vtx = 7;
 
 
     pub fn get_vtx(&self) -> &[CompactTx] {
@@ -513,7 +513,7 @@ impl CompactTx {
         self.fee = v;
     }
 
-    // repeated .cash.z.wallet.sdk.rpc.CompactSpend spends = 4;
+    // repeated .compact_formats.CompactSpend spends = 4;
 
 
     pub fn get_spends(&self) -> &[CompactSpend] {
@@ -538,7 +538,7 @@ impl CompactTx {
         ::std::mem::replace(&mut self.spends, ::protobuf::RepeatedField::new())
     }
 
-    // repeated .cash.z.wallet.sdk.rpc.CompactOutput outputs = 5;
+    // repeated .compact_formats.CompactOutput outputs = 5;
 
 
     pub fn get_outputs(&self) -> &[CompactOutput] {
@@ -1193,20 +1193,20 @@ impl ::protobuf::reflect::ProtobufValue for CompactOutput {
 }
 
 static file_descriptor_proto_data: &'static [u8] = b"\
-    \n\x15compact_formats.proto\x12\x15cash.z.wallet.sdk.rpc\"\xb1\x01\n\x0c\
-    CompactBlock\x12\x16\n\x0cprotoVersion\x18\x01\x20\x01(\rB\0\x12\x10\n\
-    \x06height\x18\x02\x20\x01(\x04B\0\x12\x0e\n\x04hash\x18\x03\x20\x01(\
-    \x0cB\0\x12\x12\n\x08prevHash\x18\x04\x20\x01(\x0cB\0\x12\x0e\n\x04time\
-    \x18\x05\x20\x01(\rB\0\x12\x10\n\x06header\x18\x06\x20\x01(\x0cB\0\x12/\
-    \n\x03vtx\x18\x07\x20\x03(\x0b2\x20.cash.z.wallet.sdk.rpc.CompactTxB\0:\
-    \0\"\xad\x01\n\tCompactTx\x12\x0f\n\x05index\x18\x01\x20\x01(\x04B\0\x12\
-    \x0e\n\x04hash\x18\x02\x20\x01(\x0cB\0\x12\r\n\x03fee\x18\x03\x20\x01(\r\
-    B\0\x125\n\x06spends\x18\x04\x20\x03(\x0b2#.cash.z.wallet.sdk.rpc.Compac\
-    tSpendB\0\x127\n\x07outputs\x18\x05\x20\x03(\x0b2$.cash.z.wallet.sdk.rpc\
-    .CompactOutputB\0:\0\"\x1e\n\x0cCompactSpend\x12\x0c\n\x02nf\x18\x01\x20\
-    \x01(\x0cB\0:\0\"E\n\rCompactOutput\x12\r\n\x03cmu\x18\x01\x20\x01(\x0cB\
-    \0\x12\r\n\x03epk\x18\x02\x20\x01(\x0cB\0\x12\x14\n\nciphertext\x18\x03\
-    \x20\x01(\x0cB\0:\0B\0b\x06proto3\
+    \n\x15compact_formats.proto\x12\x0fcompact_formats\"\xab\x01\n\x0cCompac\
+    tBlock\x12\x16\n\x0cprotoVersion\x18\x01\x20\x01(\rB\0\x12\x10\n\x06heig\
+    ht\x18\x02\x20\x01(\x04B\0\x12\x0e\n\x04hash\x18\x03\x20\x01(\x0cB\0\x12\
+    \x12\n\x08prevHash\x18\x04\x20\x01(\x0cB\0\x12\x0e\n\x04time\x18\x05\x20\
+    \x01(\rB\0\x12\x10\n\x06header\x18\x06\x20\x01(\x0cB\0\x12)\n\x03vtx\x18\
+    \x07\x20\x03(\x0b2\x1a.compact_formats.CompactTxB\0:\0\"\xa1\x01\n\tComp\
+    actTx\x12\x0f\n\x05index\x18\x01\x20\x01(\x04B\0\x12\x0e\n\x04hash\x18\
+    \x02\x20\x01(\x0cB\0\x12\r\n\x03fee\x18\x03\x20\x01(\rB\0\x12/\n\x06spen\
+    ds\x18\x04\x20\x03(\x0b2\x1d.compact_formats.CompactSpendB\0\x121\n\x07o\
+    utputs\x18\x05\x20\x03(\x0b2\x1e.compact_formats.CompactOutputB\0:\0\"\
+    \x1e\n\x0cCompactSpend\x12\x0c\n\x02nf\x18\x01\x20\x01(\x0cB\0:\0\"E\n\r\
+    CompactOutput\x12\r\n\x03cmu\x18\x01\x20\x01(\x0cB\0\x12\r\n\x03epk\x18\
+    \x02\x20\x01(\x0cB\0\x12\x14\n\nciphertext\x18\x03\x20\x01(\x0cB\0:\0B\0\
+    b\x06proto3\
 ";
 
 static mut file_descriptor_proto_lazy: ::protobuf::lazy::Lazy<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::lazy::Lazy {
