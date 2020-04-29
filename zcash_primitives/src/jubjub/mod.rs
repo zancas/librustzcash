@@ -535,3 +535,29 @@ fn test_jubjub_bls12_pedersen_hash_generators_consistency_check_linear_relation(
 
     JubjubBls12::check_consistency_of_pedersen_hash_generators(&params, &pedersen_hash_generators);
 }
+
+#[cfg(test)]
+pub mod wasmtests {
+    use super::JubjubBls12;
+
+    // Add functionality for wasm-in-browser test
+    use wasm_bindgen_test::wasm_bindgen_test;
+    wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
+    use web_sys;
+
+    fn get_performance_timer() -> web_sys::Performance {
+        let window = web_sys::window().expect("should have a window in this context");
+        let performance = window
+            .performance()
+            .expect("performance should be available");
+        performance
+    }
+
+    #[wasm_bindgen_test]
+    fn time_fvk_from_espk() {
+        let timer = get_performance_timer();
+        let start = timer.now();
+        let j = JubjubBls12::new();
+        assert_eq!(1 as f64, timer.now() - start);
+    }
+}

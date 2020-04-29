@@ -34,6 +34,11 @@ subtle = "2.2.1"
 criterion = "0.3"
 hex-literal = "0.2"
 rand_xorshift = "0.2"
+wasm-bindgen-test = "0.2"
+
+[dev-dependencies.web-sys]
+version = "0.3.37"
+features = ['Window', 'Performance']
 
 [features]
 transparent-inputs = ["ripemd160", "secp256k1"]
