@@ -538,9 +538,9 @@ fn test_jubjub_bls12_pedersen_hash_generators_consistency_check_linear_relation(
 
 #[cfg(test)]
 pub mod wasmtests {
-    use super::JubjubBls12;
 
     // Add functionality for wasm-in-browser test
+    use wasm_bindgen::JsValue;
     use wasm_bindgen_test::wasm_bindgen_test;
     wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
     use web_sys;
@@ -555,9 +555,218 @@ pub mod wasmtests {
 
     #[wasm_bindgen_test]
     fn time_fvk_from_espk() {
+        use super::*;
         let timer = get_performance_timer();
         let start = timer.now();
-        let j = JubjubBls12::new();
-        assert_eq!(1 as f64, timer.now() - start);
+        let montgomery_a = Fr::from_str("40962").unwrap();
+        let montgomery_2a = montgomery_a.double();
+
+        let mut tmp_params = JubjubBls12 {
+            // d = -(10240/10241)
+            edwards_d: Fr::from_str(
+                "19257038036680949359750312669786877991949435402254120286184196891950884077233",
+            )
+            .unwrap(),
+            // A = 40962
+            montgomery_a,
+            // 2A = 2.A
+            montgomery_2a,
+            // scaling factor = sqrt(4 / (a - d))
+            scale: Fr::from_str(
+                "17814886934372412843466061268024708274627479829237077604635722030778476050649",
+            )
+            .unwrap(),
+
+            // We'll initialize these below
+            pedersen_hash_generators: vec![],
+            pedersen_hash_exp: vec![],
+            pedersen_circuit_generators: vec![],
+            fixed_base_generators: vec![],
+            fixed_base_circuit_generators: vec![],
+        };
+
+        // Create the bases for the Pedersen hashes
+        {
+            let mut pedersen_hash_generators = vec![];
+
+            for m in 0..6 {
+                use byteorder::{LittleEndian, WriteBytesExt};
+
+                let mut segment_number = [0u8; 4];
+                (&mut segment_number[0..4])
+                    .write_u32::<LittleEndian>(m)
+                    .unwrap();
+
+                pedersen_hash_generators.push(JubjubBls12::find_group_hash(
+                    &segment_number,
+                    constants::PEDERSEN_HASH_GENERATORS_PERSONALIZATION,
+                    &tmp_params,
+                ));
+            }
+
+            JubjubBls12::check_consistency_of_pedersen_hash_generators(
+                &tmp_params,
+                &pedersen_hash_generators,
+            );
+            tmp_params.pedersen_hash_generators = pedersen_hash_generators;
+        }
+
+        // Create the exp table for the Pedersen hash generators
+        {
+            let mut pedersen_hash_exp = vec![];
+
+            for g in &tmp_params.pedersen_hash_generators {
+                let mut g = g.clone();
+
+                let window = JubjubBls12::pedersen_hash_exp_window_size();
+
+                let mut tables = vec![];
+
+                let mut num_bits = 0;
+                while num_bits <= fs::Fs::NUM_BITS {
+                    let mut table = Vec::with_capacity(1 << window);
+
+                    let mut base = edwards::Point::zero();
+
+                    for _ in 0..(1 << window) {
+                        table.push(base.clone());
+                        base = base.add(&g, &tmp_params);
+                    }
+
+                    tables.push(table);
+                    num_bits += window;
+
+                    for _ in 0..window {
+                        g = g.double(&tmp_params);
+                    }
+                }
+
+                pedersen_hash_exp.push(tables);
+            }
+
+            tmp_params.pedersen_hash_exp = pedersen_hash_exp;
+        }
+
+        // Create the bases for other parts of the protocol
+        {
+            let mut fixed_base_generators =
+                vec![edwards::Point::zero(); FixedGenerators::Max as usize];
+
+            fixed_base_generators[FixedGenerators::ProofGenerationKey as usize] =
+                JubjubBls12::find_group_hash(
+                    &[],
+                    constants::PROOF_GENERATION_KEY_BASE_GENERATOR_PERSONALIZATION,
+                    &tmp_params,
+                );
+
+            fixed_base_generators[FixedGenerators::NoteCommitmentRandomness as usize] =
+                JubjubBls12::find_group_hash(
+                    b"r",
+                    constants::PEDERSEN_HASH_GENERATORS_PERSONALIZATION,
+                    &tmp_params,
+                );
+
+            fixed_base_generators[FixedGenerators::NullifierPosition as usize] =
+                JubjubBls12::find_group_hash(
+                    &[],
+                    constants::NULLIFIER_POSITION_IN_TREE_GENERATOR_PERSONALIZATION,
+                    &tmp_params,
+                );
+
+            fixed_base_generators[FixedGenerators::ValueCommitmentValue as usize] =
+                JubjubBls12::find_group_hash(
+                    b"v",
+                    constants::VALUE_COMMITMENT_GENERATOR_PERSONALIZATION,
+                    &tmp_params,
+                );
+
+            fixed_base_generators[FixedGenerators::ValueCommitmentRandomness as usize] =
+                JubjubBls12::find_group_hash(
+                    b"r",
+                    constants::VALUE_COMMITMENT_GENERATOR_PERSONALIZATION,
+                    &tmp_params,
+                );
+
+            fixed_base_generators[FixedGenerators::SpendingKeyGenerator as usize] =
+                JubjubBls12::find_group_hash(
+                    &[],
+                    constants::SPENDING_KEY_GENERATOR_PERSONALIZATION,
+                    &tmp_params,
+                );
+
+            // Check for duplicates, far worse than spec inconsistencies!
+            for (i, p1) in fixed_base_generators.iter().enumerate() {
+                if p1 == &edwards::Point::zero() {
+                    panic!("Neutral element!");
+                }
+
+                for p2 in fixed_base_generators.iter().skip(i + 1) {
+                    if p1 == p2 {
+                        panic!("Duplicate generator!");
+                    }
+                }
+            }
+
+            tmp_params.fixed_base_generators = fixed_base_generators;
+        }
+
+        // Create the 2-bit window table lookups for each 4-bit
+        // "chunk" in each segment of the Pedersen hash
+        {
+            let mut pedersen_circuit_generators = vec![];
+
+            // Process each segment
+            for gen in tmp_params.pedersen_hash_generators.iter().cloned() {
+                let mut gen = montgomery::Point::from_edwards(&gen, &tmp_params);
+                let mut windows = vec![];
+                for _ in 0..tmp_params.pedersen_hash_chunks_per_generator() {
+                    // Create (x, y) coeffs for this chunk
+                    let mut coeffs = vec![];
+                    let mut g = gen.clone();
+
+                    // coeffs = g, g*2, g*3, g*4
+                    for _ in 0..4 {
+                        coeffs.push(g.to_xy().expect("cannot produce O"));
+                        g = g.add(&gen, &tmp_params);
+                    }
+                    windows.push(coeffs);
+
+                    // Our chunks are separated by 2 bits to prevent overlap.
+                    for _ in 0..4 {
+                        gen = gen.double(&tmp_params);
+                    }
+                }
+                pedersen_circuit_generators.push(windows);
+            }
+
+            tmp_params.pedersen_circuit_generators = pedersen_circuit_generators;
+        }
+
+        // Create the 3-bit window table lookups for fixed-base
+        // exp of each base in the protocol.
+        {
+            let mut fixed_base_circuit_generators = vec![];
+
+            for mut gen in tmp_params.fixed_base_generators.iter().cloned() {
+                let mut windows = vec![];
+                for _ in 0..tmp_params.fixed_base_chunks_per_generator() {
+                    let mut coeffs = vec![(Fr::zero(), Fr::one())];
+                    let mut g = gen.clone();
+                    for _ in 0..7 {
+                        coeffs.push(g.to_xy());
+                        g = g.add(&gen, &tmp_params);
+                    }
+                    windows.push(coeffs);
+
+                    // gen = gen * 8
+                    gen = g;
+                }
+                fixed_base_circuit_generators.push(windows);
+            }
+
+            tmp_params.fixed_base_circuit_generators = fixed_base_circuit_generators;
+        }
+
+        web_sys::console::log_1(&JsValue::from(timer.now() - start));
     }
 }
