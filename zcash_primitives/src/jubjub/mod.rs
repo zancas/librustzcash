@@ -589,6 +589,7 @@ pub mod wasmtests {
         {
             let mut pedersen_hash_generators = vec![];
 
+            let start_loop_time = timer.now();
             for m in 0..6 {
                 use byteorder::{LittleEndian, WriteBytesExt};
 
@@ -603,6 +604,8 @@ pub mod wasmtests {
                     &tmp_params,
                 ));
             }
+            web_sys::console::log_1(&JsValue::from("base creation for Pedersen hashes: "));
+            web_sys::console::log_1(&JsValue::from(timer.now() - start_loop_time));
 
             JubjubBls12::check_consistency_of_pedersen_hash_generators(
                 &tmp_params,
@@ -615,6 +618,7 @@ pub mod wasmtests {
         {
             let mut pedersen_hash_exp = vec![];
 
+            let start_loop_time = timer.now();
             for g in &tmp_params.pedersen_hash_generators {
                 let mut g = g.clone();
 
@@ -643,6 +647,8 @@ pub mod wasmtests {
 
                 pedersen_hash_exp.push(tables);
             }
+            web_sys::console::log_1(&JsValue::from("exp table for Pedersen Hash generators: "));
+            web_sys::console::log_1(&JsValue::from(timer.now() - start_loop_time));
 
             tmp_params.pedersen_hash_exp = pedersen_hash_exp;
         }
@@ -706,7 +712,6 @@ pub mod wasmtests {
                     }
                 }
             }
-
             tmp_params.fixed_base_generators = fixed_base_generators;
         }
 
@@ -716,6 +721,7 @@ pub mod wasmtests {
             let mut pedersen_circuit_generators = vec![];
 
             // Process each segment
+            let start_loop_time = timer.now();
             for gen in tmp_params.pedersen_hash_generators.iter().cloned() {
                 let mut gen = montgomery::Point::from_edwards(&gen, &tmp_params);
                 let mut windows = vec![];
@@ -738,6 +744,10 @@ pub mod wasmtests {
                 }
                 pedersen_circuit_generators.push(windows);
             }
+            web_sys::console::log_1(&JsValue::from(
+                "Creation Time for 2-bit window table lookups for each 4-bit 'chunk': ",
+            ));
+            web_sys::console::log_1(&JsValue::from(timer.now() - start_loop_time));
 
             tmp_params.pedersen_circuit_generators = pedersen_circuit_generators;
         }
@@ -747,6 +757,7 @@ pub mod wasmtests {
         {
             let mut fixed_base_circuit_generators = vec![];
 
+            let start_loop_time = timer.now();
             for mut gen in tmp_params.fixed_base_generators.iter().cloned() {
                 let mut windows = vec![];
                 for _ in 0..tmp_params.fixed_base_chunks_per_generator() {
@@ -763,10 +774,15 @@ pub mod wasmtests {
                 }
                 fixed_base_circuit_generators.push(windows);
             }
+            web_sys::console::log_1(&JsValue::from(
+                "Creation Time for 3-bit window table lookups: ",
+            ));
+            web_sys::console::log_1(&JsValue::from(timer.now() - start_loop_time));
 
             tmp_params.fixed_base_circuit_generators = fixed_base_circuit_generators;
         }
 
+        web_sys::console::log_1(&JsValue::from("Total: "));
         web_sys::console::log_1(&JsValue::from(timer.now() - start));
     }
 }
